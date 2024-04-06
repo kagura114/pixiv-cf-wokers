@@ -10,8 +10,8 @@ A proxy let you use images from pixiv without pain, with [`workers-rs`](https://
 
 ## Development
 
-Clone this repo, then npx wrangler dev, you have to **turn off** local mode in wrangler after run when testing anything.  
-To deploy on your account, change the `name` field, which is the name of your worker, in `wrangler.toml` and then use `npx wrangler deploy` to upload.
+Clone this repo, then `npx wrangler dev` to build and start a local server, you have to **turn off** local mode in your local server.  
+To deploy on your cloudflare account, change the `name` field, which is the name of your worker, in `wrangler.toml` and then use `npx wrangler deploy` to upload.
 
 ## Useful hints
 
