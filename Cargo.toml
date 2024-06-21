@@ -1,14 +1,15 @@
 [package]
 name = "pixiv-workers"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = "0.0.18"
-reqwest = "0.12.3"
+worker = "0.3.0"
+reqwest = "0.12.5"
+regex = "1.10.5"
 
 [profile.release]
 opt-level = "s" # optimize for size in release builds
