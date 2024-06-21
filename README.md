@@ -10,21 +10,15 @@ A proxy let you use images from pixiv without pain, with [`workers-rs`](https://
 
 ## Development
 
-Clone this repo, then `npx wrangler dev` to build and start a local server, you have to **turn off** local mode in your local server.  
+Clone this repo, then `npx wrangler dev` to build and start a local server, you have to **turn off** local mode in your local server.\
 To deploy on your cloudflare account, change the `name` field, which is the name of your worker, in `wrangler.toml` and then use `npx wrangler deploy` to upload.
 
+## Usage
+For every image in pixiv, jpg/png files are accessed under `i.pximg.net`, and need a valid `REFERER` to access data. So we add referer and then proxy our request to the original server.\
+So the only thing users need to do is to change `i.pximg.net` to `your.worker.domain` and everything will go.
+
 ## Useful hints
+For more help in reqwest, see [docs.rs/reqwest](https://docs.rs/reqwest/latest/reqwest/)
 
-### Proxying
-On building client, change the code to below to use proxies.
-```Rust
-let proxy = reqwest::Proxy::http("http://114.5.1.4");
-let client = match proxy{
-    Ok(p) => reqwest::Client::builder().proxy(p).build(),
-    Err(_) => Ok(reqwest::Client::new()) // In this case we just do not use proxy
-}.unwrap();
-```
-For more help, see [docs.rs/reqwest](https://docs.rs/reqwest/latest/reqwest/struct.Proxy.html)
 ## Issues
-
 If you have any problems with this, you are welcome to leave an issue.
