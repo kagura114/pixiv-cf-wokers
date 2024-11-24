@@ -36,6 +36,8 @@ async fn get_image_by_url(req: Request, env: Env) -> Result<Response> {
     };
 
     headers.set("Access-Control-Allow-Origin", allowed_origin.as_str())?;
+    headers.set("Access-Control-Allow-Methods", "GET,POST")?;
+    headers.set("Access-Control-Allow-Headers", "Content-Type")?;
 
     let bytes = match data {
         Ok(r) => r.bytes(),
