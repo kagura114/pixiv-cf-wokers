@@ -10,13 +10,13 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     if req.path().starts_with("/pid") {
         get_image_by_pid(req, env).await
     } else if req.path().starts_with("/img-original") {
-        get_image_by_url(req).await
+        get_image_by_url(req, env).await
     } else {
         return Response::ok("Hello World");
     }
 }
 
-async fn get_image_by_url(req: Request) -> Result<Response> {
+async fn get_image_by_url(req: Request, env: Env) -> Result<Response> {
     let mut endpoint = req.url()?;
     endpoint.set_host(Some("i.pximg.net"))?;
 
@@ -29,6 +29,13 @@ async fn get_image_by_url(req: Request) -> Result<Response> {
 
     let mut headers = Headers::new();
     headers.set("Content-Disposition", "inline")?;
+
+    let allowed_origin = match env.secret("allow-origin") {
+        Ok(origin) => origin.to_string(),
+        Err(_) => "*".to_string(),
+    };
+
+    headers.set("Access-Control-Allow-Origin", allowed_origin.as_str())?;
 
     let bytes = match data {
         Ok(r) => r.bytes(),
@@ -70,14 +77,14 @@ async fn get_image_by_pid(req: Request, env: Env) -> Result<Response> {
     let host = match env.secret("host") {
         Ok(h) => h.to_string(),
         Err(_) => {
-            return Response::error("Not avaliable.", StatusCode::SERVICE_UNAVAILABLE.as_u16())
+            return Response::error("Not available.", StatusCode::SERVICE_UNAVAILABLE.as_u16())
         }
     };
 
     let auth = match env.secret("auth") {
         Ok(a) => a.to_string(),
         Err(_) => {
-            return Response::error("Not avaliable.", StatusCode::SERVICE_UNAVAILABLE.as_u16())
+            return Response::error("Not available.", StatusCode::SERVICE_UNAVAILABLE.as_u16())
         }
     };
 
@@ -107,6 +114,7 @@ async fn get_image_by_pid(req: Request, env: Env) -> Result<Response> {
                     Method::Post,
                 )
                 .unwrap(),
+                env
             )
             .await
             .unwrap());
