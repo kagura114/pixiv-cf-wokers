@@ -20,6 +20,7 @@ async fn get_image_by_url(req: Request, env: Env) -> Result<Response> {
     let mut endpoint = req.url()?;
     endpoint.set_host(Some("i.pximg.net"))?;
 
+    // Obtain Data
     let client = reqwest::Client::new();
     let data = client
         .get(endpoint)
@@ -27,6 +28,13 @@ async fn get_image_by_url(req: Request, env: Env) -> Result<Response> {
         .send()
         .await;
 
+    let bytes = match data {
+        Ok(r) => r.bytes(),
+        Err(e) => return Response::error(e.to_string(), e.status().unwrap().as_u16()),
+    }
+    .await;
+
+    // Prepare Response Headers
     let mut headers = Headers::new();
     headers.set("Content-Disposition", "inline")?;
 
@@ -39,12 +47,7 @@ async fn get_image_by_url(req: Request, env: Env) -> Result<Response> {
     headers.set("Access-Control-Allow-Methods", "GET,POST")?;
     headers.set("Access-Control-Allow-Headers", "Content-Type")?;
 
-    let bytes = match data {
-        Ok(r) => r.bytes(),
-        Err(e) => return Response::error(e.to_string(), e.status().unwrap().as_u16()),
-    }
-    .await;
-
+    // Return response
     let response = Response::from_bytes(bytes.unwrap().to_vec());
     match response {
         Ok(r) => Ok(r.with_headers(headers)),
