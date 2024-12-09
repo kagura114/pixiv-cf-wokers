@@ -7,10 +7,17 @@ A proxy let you use images from pixiv without pain, with [`workers-rs`](https://
 
 [![Deploy with Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/kagura114/pixiv-cf-wokers)
 
+Also can be deployed by cloning this repository and run `npx wrangler deploy`
 
+## Secrets
+|Name|Used For|Example|Is Required|
+|---|---|---|---|
+|`host`|PID API server hostname|`server.example.com`|Need if use PID API|
+|`auth`|PID API server Bearer Authentication|*some token used for bearer authentication*|Need if use PID API|
+|`allow-origin`|Set allow origin header, if not set, default will be `Access-Control-Allow-Origin: *`|`origin.example.com`|No|
 ## Development
 
-Clone this repo, then `npx wrangler dev` to build and start a local server, you have to **turn off** local mode in your local server.\
+Clone this repo, then `npx wrangler dev` to build and start a local server, you **have to turn off** local mode in your local server (press `l` in your console).\
 To deploy on your cloudflare account, change the `name` field, which is the name of your worker, in `wrangler.toml` and then use `npx wrangler deploy` to upload.
 
 ## Usage
@@ -22,8 +29,8 @@ So the only thing users need to do is to change `i.pximg.net` to `your.worker.do
 `pid` is the pid of the gallary\
 `page` is the page (e.g. `_p0`) of the gallary\
 As pixiv blocks cloudflare workers from `pixiv.net` and proxying is not easy on wasm, another proxy is needed for getting data from pixiv.\
-To enable this, put `host` and `auth` into your worker's [secret](https://developers.cloudflare.com/workers/cli-wrangler/commands#secret), usually use `wrangler secret put <KEY>` and prompt your secret \
-`host` is the `hostname` of your proxy, e.g. `p.example.com`, do not add scheme\
+To enable this, put `host` and `auth` into your worker's [secret](https://developers.cloudflare.com/workers/cli-wrangler/commands#secret), usually use `wrangler secret put <KEY>` and prompt your secret. \
+`host` is the `hostname` of your proxy, e.g. `p.example.com`, do not add scheme.\
 `auth` is the `secret token` of your proxy, e.g. `123456`, don't leave blank!\
 Also here is an example of your nginx config
 ```
